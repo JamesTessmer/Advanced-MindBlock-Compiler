@@ -152,9 +152,9 @@ def tokenize_line(current_line):
                    token = isSymbol(current_symbol)
                    token_list.append(token)
                    current_symbol = ''
-                elif isInt == False:
-                    isLabel = True
-                    currentLabel = currentLabel + character
+                   
+                isLabel = True
+                currentLabel = currentLabel + character
             elif character.isalnum() == False and isLabel == True:
                 isLabel = False
                 token = TokenClasses.Label(currentLabel)
@@ -308,8 +308,8 @@ def tokenize_file(filename):
     return list_of_tokens
     
 
-#tokens = tokenize_file(r"C:\Users\james\test.amb")
-#for token in tokens:
-#    print(type(token))
-#    if token is not None:
-#        print(token.value)
+tokens = tokenize_file(r"C:\Users\james\test.amb")
+for token in tokens:
+    print(type(token))
+    if token is not None:
+        print(token.value)
