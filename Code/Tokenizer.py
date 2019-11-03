@@ -16,6 +16,7 @@ index is a line of the file
 """
 
 import TokenClasses
+import re
 
 
 def read_amb_file(file_name):
@@ -69,10 +70,15 @@ def tokenize_line(current_line):
     for word in text_list:
         #covering the case that the token is a keyword
         if isCharString == False:
-            token = isKeyword(word)
+            tempWord = re.sub(r'\W+', '', word)
+            print(word)
+            token = isKeyword(tempWord)
+            token2 = isKeyword(tempWord + ".")
             if token is not None:
                 token_list.append(token)
-                continue
+            elif token2 is not None:
+                token_list.append(token2)
+                
         """
         Since this function splits on white space there can be cases where an
         index of text_list could be a combination of symbols and symbol collections
@@ -86,8 +92,11 @@ def tokenize_line(current_line):
         #keeping spaces where they should be in charString
         if isCharString == True:
             charString = charString + " "
+        
+        
         for index in range(0, len(word)):
-            
+            keywords = ["START_PROGRAM","END_PROGRAM.","START_SUB","END_SUB.","GOSUB","CODE","IF","THEN","ELSE","END_IF","WHILE","DO","END_WHILE","INT","STRING","PRINT","INPUT"]
+
             character = word[index]
             if character == None:
                 break
@@ -156,10 +165,15 @@ def tokenize_line(current_line):
                 isLabel = True
                 currentLabel = currentLabel + character
             elif character.isalnum() == False and isLabel == True:
-                isLabel = False
-                token = TokenClasses.Label(currentLabel)
-                token_list.append(token)
-                currentLabel = ""
+                if currentLabel in keywords or currentLabel + "_" in word or "_" + currentLabel in word:
+                    isLabel = False
+                    currentLabel = ""
+                
+                else:
+                    isLabel = False
+                    token = TokenClasses.Label(currentLabel)
+                    token_list.append(token)
+                    currentLabel = ""
                
  
                 
@@ -192,11 +206,17 @@ def tokenize_line(current_line):
                     if len(current_symbol) == 2:
                         token_list.append(token)
                         current_symbol = ''
-                    else:
-                        continue
+
                 else:
-                    token_list.append(token)
-                    current_symbol = ''
+                    if type(token) == TokenClasses.HardOpen and type(token_list[-1]) != TokenClasses.Label :
+                        prevTok = token_list[-1]
+                        token_list[-1] = token
+                        token_list.append(prevTok)
+                        current_symbol = ""
+                        
+                    else:
+                       token_list.append(token)
+                       current_symbol = ''
                 
                     
             """
@@ -205,11 +225,12 @@ def tokenize_line(current_line):
             """
             if index == len(word) -1:
                 #print(current_symbol)
-                if len(token_list) == 0 or (isLabel == True and token_list[-1].value != currentLabel):
-                    token = TokenClasses.Label(currentLabel)
-                    token_list.append(token)
-                    isLabel = False
-                    currentLabel = ''
+                if len(token_list) == 0 or (isLabel == True and type(token_list[-1]) is not TokenClasses.Label) and currentLabel not in keywords:
+                    if (currentLabel + "_") not in word and ("_" + currentLabel) not in word:
+                        token = TokenClasses.Label(currentLabel)
+                        token_list.append(token)
+                        isLabel = False
+                        currentLabel = ''
                 if len(token_list) == 0 or(isInt == True and token_list[-1].value != currentInt):
                     token = TokenClasses.Integer(currentInt)
                     token_list.append(token)
@@ -220,7 +241,9 @@ def tokenize_line(current_line):
                     token = isSymbol(current_symbol)
                     current_symbol = ''
                     token_list.append(token)
-                    
+                
+                currentLabel = ''
+                isLabel = False
                 
             
                 
@@ -260,10 +283,8 @@ def isKeyword(text):
         #if it is a keyword
         if text in keyword_dict.keys():
             return keyword_dict[text]
-        else:
-            raise Exception("Invalid keyword")
-    else:
-        return None;
+
+    return None;
 
 """
 Checks to see if the current word is a symbol using a dictionary
@@ -285,6 +306,8 @@ def isSymbol(text):
                    "=>": TokenClasses.CompOp("=>"),
                    "=": TokenClasses.CompOp("="),
                    "!=": TokenClasses.CompOp("!="),
+                   "[": TokenClasses.HardOpen(),
+                   "]": TokenClasses.HardClose()
                    }
     if text in symbol_dict.keys():
         return symbol_dict[text]
@@ -308,8 +331,3 @@ def tokenize_file(filename):
     return list_of_tokens
     
 
-tokens = tokenize_file(r"C:\Users\james\test.amb")
-for token in tokens:
-    print(type(token))
-    if token is not None:
-        print(token.value)
