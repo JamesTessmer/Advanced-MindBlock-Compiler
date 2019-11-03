@@ -155,6 +155,14 @@ def parse(tokens):
     The current node is then updated to the next node
     """
     while index < len(tokens) and currentNode != None:
+        
+        print("Printing current node tokenOrVar, then token type")
+        print(type(currentNode.tokenOrVariable))
+        print(type(tokens[index]))
+        if type(tokens[index]) is tc.Label:
+            print("value of label")
+            print(tokens[index].value)
+        
         if len(currentNode.children)==0:
             if type(currentNode.tokenOrVariable) is Program:
                 if type(tokens[index]) is tc.START_PROGRAM:     
@@ -218,7 +226,7 @@ def parse(tokens):
                 if type(tokens[index]) is tc.START_SUB:
                     currentNode.addChild(tc.START_SUB())
                     currentNode.addChild(tc.Label())
-                    currentNode.addChild(tc.Semicolon())
+                    currentNode.addChild(tc.Colon())
                     currentNode.addChild(CodeList())
                     currentNode.addChild(SubList())
                 elif type(tokens[index]) is tc.END_PROGRAM:
@@ -252,7 +260,7 @@ def parse(tokens):
                     currentNode.addChild(tc.SoftClose())
                     currentNode.addChild(tc.Semicolon())
                 elif type(tokens[index]) is tc.GOSUB:
-                    currentNode.addChild(CodeLine())
+                    currentNode.addChild(tc.GOSUB())
                     currentNode.addChild(tc.Label())
                     currentNode.addChild(tc.Semicolon())
                 else:
@@ -296,7 +304,7 @@ def parse(tokens):
             elif type(currentNode.tokenOrVariable) is ThenCodeList:
                 if type(tokens[index]) is tc.PRINT or type(tokens[index]) is tc.GOSUB or type(tokens[index]) is tc.Label or type(tokens[index]) is tc.IF or type(tokens[index]) is tc.WHILE:
                     currentNode.addChild(CodeLine())
-                    currentNode.addChild(CodeList())
+                    currentNode.addChild(ThenCodeList())
                 elif type(tokens[index]) is tc.ELSE:
                     currentNode.addChild(tc.ELSE())
                     currentNode.addChild(ElseCodeList())
@@ -315,7 +323,7 @@ def parse(tokens):
                     raise Exception("Error on ElseCodeList")
                     
             elif type(currentNode.tokenOrVariable) is Loop:
-                if type(tokens[index]) is tc.While:
+                if type(tokens[index]) is tc.WHILE:
                     currentNode.addChild(tc.WHILE())
                     currentNode.addChild(Expression())
                     currentNode.addChild(tc.CompOp())
@@ -328,8 +336,8 @@ def parse(tokens):
             elif type(currentNode.tokenOrVariable) is WhileCodeList:
                 if type(tokens[index]) is tc.PRINT or type(tokens[index]) is tc.GOSUB or type(tokens[index]) is tc.Label or type(tokens[index]) is tc.IF or type(tokens[index]) is tc.WHILE:
                     currentNode.addChild(CodeLine())
-                    currentNode.addChild(CodeList())
-                elif type(tokens[index]) is tc.END_IF:
+                    currentNode.addChild(WhileCodeList())
+                elif type(tokens[index]) is tc.END_WHILE:
                     currentNode.addChild(tc.END_WHILE())
 
                 else:
@@ -405,7 +413,7 @@ def parse(tokens):
                     currentNode.addChild(tc.HardOpen())
                     currentNode.addChild(tc.Integer())
                     currentNode.addChild(tc.HardClose())
-                elif type(tokens[index]) is tc.MultOp or type(tokens[index]) is tc.AddOp or type(tokens[index]) is tc.CompOp or type(tokens[index]) is tc.DO or type(tokens[index]) is tc.SoftClose or type(tokens[index]) is tc.Semicolon or type(tokens[index]) is tc.THEN:
+                elif type(tokens[index]) is tc.AddOp or type(tokens[index]) is tc.CompOp or type(tokens[index]) is tc.DO or type(tokens[index]) is tc.SoftClose or type(tokens[index]) is tc.Semicolon or type(tokens[index]) is tc.THEN:
                     currentNode.addChild(None)
                 else:
                     raise Exception("Error on FactorTail")
