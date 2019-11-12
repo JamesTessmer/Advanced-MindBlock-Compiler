@@ -1,0 +1,13 @@
+#include <stdio.h>
+int x;
+char* str[] ppp;
+int abc;
+void pp(){
+scanf("%d ", &x); 
+}
+int main(int argc, char * argv[]){
+x=15;
+printf("103020 + %d  \n",x); 
+pp(); 
+return 1; 
+}

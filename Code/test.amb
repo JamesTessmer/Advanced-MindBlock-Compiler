@@ -1,0 +1,16 @@
+START_PROGRAM
+INT x;
+STRING ppp;
+INT abc;
+CODE
+START_SUB pp:
+x := INPUT;
+END_SUB.
+START_SUB main:
+
+x := 15;
+PRINT ("103020" + x);
+GOSUB pp;
+
+END_SUB.
+END_PROGRAM.

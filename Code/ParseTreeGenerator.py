@@ -123,11 +123,17 @@ class ParseTreeNode:
     def printNode(self,level):
         print("At level "+str(level)+" my children are")
         for child in self.children:
-            print("\t"+str(type(child.tokenOrVariable)))
+            print("\t" + str(type(child.tokenOrVariable)))
             if isinstance(child.tokenOrVariable,tc.Token):
-                print("\t" + str(child.tokenOrVariable.value))
+                print("\t" + str(child.tokenOrVariable.dump_node()))
         for child in self.children:
             child.printNode(level+1)
+            
+    def dumpNode(self, c_list):
+        if isinstance(self.tokenOrVariable,tc.Token):
+            c_list.append(self.tokenOrVariable.dump_node())
+        for child in self.children:
+            child.dumpNode(c_list)
 
 class ParseTree:
     def __init__(self):
@@ -135,6 +141,9 @@ class ParseTree:
 
     def printTree(self):
         self.head.printNode(0)
+        
+    def dumpTree(self, c_list):
+        return self.head.dumpNode(c_list)
 
 
 
@@ -156,12 +165,12 @@ def parse(tokens):
     """
     while index < len(tokens) and currentNode != None:
         
-        print("Printing current node tokenOrVar, then token type")
-        print(type(currentNode.tokenOrVariable))
-        print(type(tokens[index]))
-        if type(tokens[index]) is tc.Label:
-            print("value of label")
-            print(tokens[index].value)
+        #print("Printing current node tokenOrVar, then token type")
+        #print(type(currentNode.tokenOrVariable))
+        #print(type(tokens[index]))
+        #if type(tokens[index]) is tc.Label:
+            #print("value of label")
+            #print(tokens[index].value)
         
         if len(currentNode.children)==0:
             if type(currentNode.tokenOrVariable) is Program:
@@ -348,7 +357,7 @@ def parse(tokens):
                     currentNode.addChild(Expression())
                 elif type(tokens[index]) is tc.INPUT:
                     currentNode.addChild(tc.INPUT())
-                    currentNode.addChild(tc.Semicolon())
+                   # currentNode.addChild(tc.Semicolon())
 
                 else:
                     raise Exception("Error on ElseCodeList")

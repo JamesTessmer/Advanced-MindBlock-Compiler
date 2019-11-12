@@ -71,7 +71,7 @@ def tokenize_line(current_line):
         #covering the case that the token is a keyword
         if isCharString == False:
             tempWord = re.sub(r'\W+', '', word)
-            print(word)
+            #print(word)
             token = isKeyword(tempWord)
             token2 = isKeyword(tempWord + ".")
             if token is not None:
