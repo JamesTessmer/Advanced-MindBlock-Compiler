@@ -10,6 +10,7 @@ import ParseTreeGenerator as PTG
 import TokenClasses as tc
 import AMButility as util
 import os
+import subprocess as sp
 
 def ambToC(filename):
     tokens = tok.tokenize_file(filename)
@@ -55,6 +56,9 @@ def ambToC(filename):
     f.close()
     
     #running the file
-    #print(os.system("gcc tempCfile.c -o tempCfile && ./ tempCfile.exe"))
+    os.system("gcc tempCfile.c -o tempCfile")
+    path = os.path.abspath("tempCfile.exe")
+    sp.Popen([path])
+    
     
 ambToC("test.amb")
