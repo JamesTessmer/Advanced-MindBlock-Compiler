@@ -11,6 +11,15 @@ START_SUB main:
 x := 15;
 PRINT ("103020" + x);
 GOSUB pp;
+abc := 13;
+
+IF x < abc THEN
+x := x + 1;
+ELSE END_IF
+
+WHILE x = abc DO
+abc := x + 1;
+END_WHILE
 
 END_SUB.
 END_PROGRAM.

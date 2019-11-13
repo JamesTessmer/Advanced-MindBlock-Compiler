@@ -236,6 +236,8 @@ class CompOp(Token):
         self.value = op
         
     def dump_node(self): 
+        if self.value == "=":
+            return "=="
         return str(self.value)
         
 class HardOpen(Token):

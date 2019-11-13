@@ -17,6 +17,7 @@ def ambToC(filename):
     label_type = {}
     
     #creating a dictionary to correlate each label to its type, used for input and printing 
+    #also creating a list of function names so that functions can be declared and called in any order
     for i in range (0,len(true_tokens)):
         token = true_tokens[i]
         if isinstance(token,tc.Label):
@@ -24,10 +25,15 @@ def ambToC(filename):
                 label_type[token.value] = "INT"
             else:
                 label_type[token.value] = "STRING"
-
+        
         #when CODE keyword is encountered no more variables are declared
         if type(token) == tc.CODE:
             break
+    func_list = []
+    for i in range(0,len(true_tokens)):
+        token = true_tokens[i]
+        if isinstance(token,tc.START_SUB):
+            func_list.append(true_tokens[i+1].value)
             
 
     parseTree = PTG.parse(true_tokens)
@@ -35,10 +41,10 @@ def ambToC(filename):
     c_list = []
     parseTree.dumpTree(c_list)
     #print("printing list")
-    print(c_list)
+    #print(c_list)
     #print("Printing label_type dict")
     #print(label_type)
-    returned_string = util.parseListToCString(c_list, label_type)
+    returned_string = util.parseListToCString(c_list, label_type, func_list)
     print(returned_string)
     #code_parts = returned_string.split("\n")
     #print(code_parts)
@@ -49,6 +55,6 @@ def ambToC(filename):
     f.close()
     
     #running the file
-    print(os.system("gcc tempCfile.c -o tempCfile && ./ tempCfile.exe"))
+    #print(os.system("gcc tempCfile.c -o tempCfile && ./ tempCfile.exe"))
     
 ambToC("test.amb")

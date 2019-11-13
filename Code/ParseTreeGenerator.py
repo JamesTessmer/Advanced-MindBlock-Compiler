@@ -171,6 +171,7 @@ def parse(tokens):
         #if type(tokens[index]) is tc.Label:
             #print("value of label")
             #print(tokens[index].value)
+        #print(currentNode.tokenOrVariable)
         
         if len(currentNode.children)==0:
             if type(currentNode.tokenOrVariable) is Program:

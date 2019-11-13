@@ -11,7 +11,7 @@ Takes a list of parsed terms and a dictionary of labels and their types to creat
 Utilizes helper functions for cases such as printing and taking input
 """
 import TokenClasses as tc
-def parseListToCString(c_list, label_type):
+def parseListToCString(c_list, label_type, func_list):
     text = ""
     inMain = False
     bracketCt = 0
@@ -66,6 +66,11 @@ def parseListToCString(c_list, label_type):
         #only occurs once at the start of the program, and it's the only thing in the line
         if word == "#include <stdio.h>":
             text += word + "\n"
+            
+            #we will also declare functions here
+            for func_name in func_list:
+                text += func_name + "(); \n"
+            
             continue
         
         if word == '':
@@ -110,7 +115,12 @@ def parseListToCString(c_list, label_type):
             text += c_list[i+1] + "(); \n"
             continue
         
-        
+        #case for if and when statements
+        if word == "){":
+            bracketCt += 1
+            text += word + "\n"
+            continue
+            
         text += word
     return text
 
