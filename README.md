@@ -13,6 +13,5 @@ The parse tree generator takes the given list of tokens and uses the AMB grammar
 
 # Notes
 1. The program currently uses GCC to compile. This can be changed in the starter file.
-2. The grammar doesn't indicate a space being necessary between PRINT and the parentheses containing what is going to be printed, however without a space the program runs into a parse tree error, so a space should be used. 
-  ie. PRINT (*your text here*)
+2. The grammar doesn't indicate a space being necessary between PRINT and the parentheses containing what is going to be printed, however without a space the program runs into a parse tree error, so a space should be used.                                                    ie. PRINT (*your text here*)
 3. There's a test.amb file that can be used as an example of the grammar, as well as testing that the program is working properly.
