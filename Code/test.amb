@@ -1,24 +1,28 @@
 START_PROGRAM
 INT x;
-STRING ppp;
+STRING testString;
 INT abc;
 CODE
-START_SUB pp:
+START_SUB otherSub:
+PRINT ("Please enter a value for x");
 x := INPUT;
 END_SUB.
 START_SUB main:
+testString := "Test";
+PRINT (testString);
 
 x := 15;
+GOSUB otherSub;
 PRINT ("103020" + x);
-GOSUB pp;
-abc := 13;
+abc := 20;
 
 IF x < abc THEN
 x := x + 1;
 ELSE END_IF
 
-WHILE x = abc DO
-abc := x + 1;
+WHILE x < abc DO
+x := x + 1;
+PRINT ("X is less than abc");
 END_WHILE
 
 END_SUB.

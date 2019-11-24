@@ -19,6 +19,7 @@ def parseListToCString(c_list, label_type, func_list):
     inPrint = False
     inScan = False
     inGS = False
+    inStrCpy = False
     for i in range(0, len(c_list)):
         """
         Handling specific cases
@@ -51,6 +52,19 @@ def parseListToCString(c_list, label_type, func_list):
             else:
                 continue
             
+        if inStrCpy:
+            if word == ';':
+                inStrCpy = False
+                continue
+            else:
+                continue
+            
+        #string assignment case
+        if word in label_type.keys() and label_type[word] == "STRING" and c_list[i+1] == "=":
+            text += "strcpy("  + word + "," + '"' + c_list[i+2] + '"' + "); \n"
+            inStrCpy = True
+            continue
+            
         #checking for input
         if i+2 < len(c_list) and c_list[i+2] == "scanf":
             inScan = True
@@ -66,11 +80,14 @@ def parseListToCString(c_list, label_type, func_list):
         #only occurs once at the start of the program, and it's the only thing in the line
         if word == "#include <stdio.h>":
             text += word + "\n"
+            text += "#include <string.h> \n"
             
             #we will also declare functions here
             for func_name in func_list:
-                text += func_name + "(); \n"
-            
+                if func_name != "main":
+                    text += "void " +func_name + "(); \n"
+                else:
+                    text += "int " +func_name + "(); \n"
             continue
         
         if word == '':
@@ -146,7 +163,7 @@ def printInC(c_list, index, label_type):
         if word in label_type.keys():
             variables.append(word)
             #adding %d or %c depending on var type
-            print(label_type[word])
+            #print(label_type[word])
             if label_type[word] == "INT":
                 printStr += "%d "
             else:

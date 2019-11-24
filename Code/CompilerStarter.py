@@ -12,8 +12,10 @@ import AMButility as util
 import os
 import subprocess as sp
 
-def ambToC(filename):
-    tokens = tok.tokenize_file(filename)
+def ambToC():
+    path = input("Please enter the name of your amb file ex. 'test.amb; : ")
+    
+    tokens = tok.tokenize_file(path)
     true_tokens = [i for i in tokens if i] 
     label_type = {}
     
@@ -57,8 +59,9 @@ def ambToC(filename):
     
     #running the file
     os.system("gcc tempCfile.c -o tempCfile")
-    path = os.path.abspath("tempCfile.exe")
-    sp.Popen([path])
+    #path = os.path.abspath("tempCfile.exe")
+    os.system("open tempCfile")
+    #sp.Popen([path])
     
     
-ambToC("test.amb")
+ambToC()
